@@ -6,7 +6,7 @@
 
 [**Download**](../../releases/latest) · [Türkçe](README.md)
 
-<img src="docs/screenshot-en.png" alt="The Mey Drive window" width="440">
+<img src="docs/mey-drive-en.png" alt="The Mey Drive window" width="440">
 
 </div>
 

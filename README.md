@@ -6,7 +6,7 @@
 
 [**İndir**](../../releases/latest) · [English](README.en.md)
 
-<img src="docs/screenshot.png" alt="Mey Drive penceresi" width="440">
+<img src="docs/mey-drive-tr.png" alt="Mey Drive penceresi" width="440">
 
 </div>
 
