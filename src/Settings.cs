@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace MeyDrive;
 
-// settings.ini next to the exe: AppData can be redirected when the app is started from a packaged host.
+// %LOCALAPPDATA%\MeyDrive\settings.ini, so only the exe has to sit wherever the user keeps it.
 sealed class Settings
 {
     public const uint ModAlt = 0x1, ModControl = 0x2, ModShift = 0x4;
@@ -15,13 +15,21 @@ sealed class Settings
     // first run follows the Windows language: Turkish gets "tr", everything else "en"
     public string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "tr" ? "tr" : "en";
 
-    static string Path => System.IO.Path.Combine(AppContext.BaseDirectory, "settings.ini");
+    static readonly string Dir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MeyDrive");
+    static readonly string Path = System.IO.Path.Combine(Dir, "settings.ini");
+    // where 0.1.0 kept it
+    static readonly string OldPath = System.IO.Path.Combine(AppContext.BaseDirectory, "settings.ini");
 
     public static Settings Load()
     {
         var s = new Settings();
         try
         {
+            if (!File.Exists(Path) && File.Exists(OldPath))
+            {
+                Directory.CreateDirectory(Dir);
+                File.Move(OldPath, Path);
+            }
             foreach (string line in File.ReadAllLines(Path))
             {
                 int eq = line.IndexOf('=');
@@ -42,6 +50,7 @@ sealed class Settings
     {
         try
         {
+            Directory.CreateDirectory(Dir);
             File.WriteAllLines(Path, new[]
             {
                 "sensitivity=" + Sensitivity.ToString(CultureInfo.InvariantCulture),

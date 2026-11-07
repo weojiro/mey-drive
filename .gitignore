@@ -1,0 +1,13 @@
+# build output
+bin/
+obj/
+out/
+publish/
+
+# per-user settings written next to the exe
+settings.ini
+
+# editors
+.vs/
+.vscode/
+*.user
