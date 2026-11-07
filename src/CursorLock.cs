@@ -3,7 +3,7 @@ using Forms = System.Windows.Forms;
 
 namespace MeyDrive;
 
-// Hides the cursor and pins it to the bottom-left pixel of the screen (from MouseGizle).
+// Hides the cursor and pins it to the bottom-left pixel of the screen.
 // The game still gets raw mouse movement; the right-edge app bar in AC stays closed.
 static class CursorLock
 {
