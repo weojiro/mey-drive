@@ -1,0 +1,35 @@
+name: Release
+
+# Runs when you publish a release on GitHub (Releases -> Draft a new release -> Publish release).
+# It builds MeyDrive.exe for that version and attaches MeyDrive.exe and MeyDrive.exe.sha256 to the release.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build
+        shell: pwsh
+        run: |
+          # one self-contained MeyDrive.exe (the .NET runtime inside); the publish settings are in MeyDrive.csproj
+          $version = '${{ github.event.release.tag_name }}'.TrimStart('v')
+          dotnet publish src/MeyDrive.csproj -c Release -p:Version=$version -o out
+          $hash = (Get-FileHash out/MeyDrive.exe -Algorithm SHA256).Hash.ToLower()
+          "$hash  MeyDrive.exe" | Out-File -FilePath out/MeyDrive.exe.sha256 -Encoding ascii
+
+      - name: Attach files to the release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" out/MeyDrive.exe out/MeyDrive.exe.sha256 --clobber

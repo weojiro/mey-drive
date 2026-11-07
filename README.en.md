@@ -52,7 +52,7 @@ The code is all here. Every release is built from it by GitHub Actions, not on a
 <details>
 <summary><b>How do I remove it?</b></summary>
 
-Turn off *Start with Windows*, choose *Close* in the tray menu and delete the exe. Settings are in `settings.ini` next to the exe.
+Turn off *Start with Windows*, choose *Close* in the tray menu, then delete the exe and the `%LOCALAPPDATA%\MeyDrive` folder (settings).
 </details>
 
 ## License

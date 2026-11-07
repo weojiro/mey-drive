@@ -52,7 +52,7 @@ Kodun hepsi burada. Her sürüm bir bilgisayarda değil, GitHub Actions'ta bu ko
 <details>
 <summary><b>Nasıl kaldırırım?</b></summary>
 
-*Windows ile başlat*'ı kapat, tepsi menüsünden *Kapat*'ı seç ve exe'yi sil. Ayarlar exe'nin yanındaki `settings.ini` dosyasındadır.
+*Windows ile başlat*'ı kapat, tepsi menüsünden *Kapat*'ı seç, exe'yi ve `%LOCALAPPDATA%\MeyDrive` klasörünü (ayarlar) sil.
 </details>
 
 ## Lisans
