@@ -6,7 +6,7 @@
 
 [**İndir**](../../releases/latest) · [English](README.en.md)
 
-<img src="docs/mey-drive-tr.png" alt="Mey Drive penceresi" width="440">
+<img src="docs/mey-drive-v1.1-tr.png" alt="Mey Drive penceresi" width="440">
 
 </div>
 
@@ -16,17 +16,18 @@ tam ekrandayken de kaymaz.
 
 - Hassasiyeti kaydırıcıyla ya da fare tekeriyle ayarla, anında geçer.
 - **Ctrl + 0** imleci gizler ve sol alt köşeye kilitler. Kısayolu uygulamadan değiştirebilirsin.
-- Canlı direksiyon göstergesi, tepsi menüsü ve Windows ile başlatma.
+- **Assetto Corsa ile başlat:** açıkken Mey Drive tepside bekler; Content Manager veya oyun açılınca script kendiliğinden başlar, kapanınca durur.
+- Canlı direksiyon göstergesi ve tepsi menüsü.
 - Türkçe ve İngilizce: pencerenin üstündeki **TR / EN** ile seç.
 
 ## Kurulum
 
-1. [vJoy](https://github.com/BrunnerInnovation/vJoy/releases)'u kur. *Configure vJoy*'da cihaz 1 açık olsun: X, Y, Z, Rz eksenleri ve 8 buton.
-2. [Son sürümden](../../releases/latest) **MeyDrive.exe**'yi indir ve çalıştır. Başka bir şey kurman gerekmez.
-3. **BAŞLAT**'a bas. Content Manager → Ayarlar → Kontroller'de girişi *Wheel*, cihazı *vJoy Device* yap:
+1. [Son sürümden](../../releases/latest) **MeyDrive.exe**'yi indir ve çalıştır.
+2. **BAŞLAT**'a bas. vJoy kurulu değilse Mey Drive onu kendisi kurup ayarlar; Windows bir kez izin sorar.
+3. Content Manager → Ayarlar → Kontroller'de girişi *Wheel*, cihazı *vJoy Device* yap:
    direksiyon **X**, gaz **Y**, debriyaj **Z**, fren **Rz**.
 
-FreePIE açıksa kapat; vJoy'u aynı anda tek program kullanabilir.
+FreePIE açıksa kapat; vJoy'u aynı anda tek program kullanabilir. Mey Drive, [vJoy](https://github.com/BrunnerInnovation/vJoy)'un (MIT) kurulum dosyasını içinde taşır.
 
 | Tuş | Ne yapar |
 |---|---|
@@ -52,7 +53,7 @@ Kodun hepsi burada. Her sürüm bir bilgisayarda değil, GitHub Actions'ta bu ko
 <details>
 <summary><b>Nasıl kaldırırım?</b></summary>
 
-*Windows ile başlat*'ı kapat, tepsi menüsünden *Kapat*'ı seç, exe'yi ve `%LOCALAPPDATA%\MeyDrive` klasörünü (ayarlar) sil.
+*Assetto Corsa ile başlat*'ı kapat, tepsi menüsünden *Kapat*'ı seç, exe'yi ve `%LOCALAPPDATA%\MeyDrive` klasörünü (ayarlar) sil.
 </details>
 
 ## Lisans

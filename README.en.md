@@ -6,7 +6,7 @@
 
 [**Download**](../../releases/latest) · [Türkçe](README.md)
 
-<img src="docs/mey-drive-en.png" alt="The Mey Drive window" width="440">
+<img src="docs/mey-drive-v1.1-en.png" alt="The Mey Drive window" width="440">
 
 </div>
 
@@ -16,17 +16,18 @@ loop runs every 5 ms, also while the game is full screen.
 
 - Set the sensitivity with the slider or the mouse wheel; it applies at once.
 - **Ctrl + 0** hides the cursor and locks it to the bottom-left corner. Change the shortcut in the app.
-- Live steering meter, tray menu and start with Windows.
+- **Start with Assetto Corsa:** Mey Drive waits in the tray; the script starts by itself when Content Manager or the game opens, and stops when they close.
+- Live steering meter and tray menu.
 - Turkish and English: pick **TR / EN** at the top of the window.
 
 ## Install
 
-1. Install [vJoy](https://github.com/BrunnerInnovation/vJoy/releases). In *Configure vJoy*, enable device 1 with the X, Y, Z, Rz axes and 8 buttons.
-2. Download **MeyDrive.exe** from the [latest release](../../releases/latest) and run it. Nothing else needs to be installed.
-3. Press **START**. In Content Manager → Settings → Controls, set the input to *Wheel* and the device to
+1. Download **MeyDrive.exe** from the [latest release](../../releases/latest) and run it.
+2. Press **START**. If vJoy is missing, Mey Drive installs and sets it up by itself; Windows asks for permission once.
+3. In Content Manager → Settings → Controls, set the input to *Wheel* and the device to
    *vJoy Device*: steering **X**, throttle **Y**, clutch **Z**, brake **Rz**.
 
-Close FreePIE if it is open; only one program can use vJoy at a time.
+Close FreePIE if it is open; only one program can use vJoy at a time. Mey Drive carries the installer of [vJoy](https://github.com/BrunnerInnovation/vJoy) (MIT).
 
 | Key | What it does |
 |---|---|
@@ -52,7 +53,7 @@ The code is all here. Every release is built from it by GitHub Actions, not on a
 <details>
 <summary><b>How do I remove it?</b></summary>
 
-Turn off *Start with Windows*, choose *Close* in the tray menu, then delete the exe and the `%LOCALAPPDATA%\MeyDrive` folder (settings).
+Turn off *Start with Assetto Corsa*, choose *Close* in the tray menu, then delete the exe and the `%LOCALAPPDATA%\MeyDrive` folder (settings).
 </details>
 
 ## License

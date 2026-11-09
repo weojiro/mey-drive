@@ -2,12 +2,13 @@ using Microsoft.Win32;
 
 namespace MeyDrive;
 
-// "start with Windows" as a value under the current user's Run key
+// "Start with Assetto Corsa": Mey Drive starts with Windows, waits in the tray with the script off,
+// and GameWatch turns the script on while Content Manager or the game is open.
 static class Startup
 {
     const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run", Name = "MeyDrive";
 
-    static string Command => "\"" + Environment.ProcessPath + "\" --start --tray";
+    static string Command => "\"" + Environment.ProcessPath + "\" --tray";
 
     public static bool Enabled
     {
@@ -27,5 +28,11 @@ static class Startup
             catch (UnauthorizedAccessException) { }
             catch (System.Security.SecurityException) { }
         }
+    }
+
+    // keep the entry pointing at this exe with today's arguments (the exe may have moved, or 1.0 wrote --start)
+    public static void Refresh()
+    {
+        if (Enabled) Enabled = true;
     }
 }

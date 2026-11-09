@@ -13,11 +13,15 @@ public partial class MainWindow : Window
     const int HotkeyId = 1, HotkeyTestId = 2;
 
     readonly Engine _engine = new();
+    readonly GameWatch _gameWatch = new();
+    // the script was turned on by GameWatch (so it may turn it off), the user stopped it while the game
+    // was open, or starting it failed: then it stays off until CM and the game are closed
+    bool _autoStarted, _userStopped, _autoFailed;
     readonly Settings _settings = Settings.Load();
     readonly bool _startEngine;
     bool _liveOn;
     IntPtr _hwnd;
-    bool _capturing, _closing;
+    bool _capturing, _closing, _settingUp;
     // the hint under the hotkey, kept so it can be shown again in the other language
     string _hintKey = "CursorHint", _hintArg = "";
     bool _hintWarn;
@@ -38,6 +42,8 @@ public partial class MainWindow : Window
         CreditText.Text = "v" + typeof(MainWindow).Assembly.GetName().Version?.ToString(3) + "  ·  by weojiro";
 
         StartupSwitch.IsChecked = Startup.Enabled;
+        _gameWatch.Changed += OnGameChanged;
+        Startup.Refresh();
         SourceInitialized += OnSourceInitialized;
         CreateTray();
     }
@@ -49,8 +55,9 @@ public partial class MainWindow : Window
         int corner = Native.DWMWCP_ROUND;
         Native.DwmSetWindowAttribute(_hwnd, Native.DWMWA_WINDOW_CORNER_PREFERENCE, ref corner, sizeof(int));
         if (!RegisterHotkey()) ShowHotkeyHint("KeyTaken", true, HotkeyText.Text);
-        if (_startEngine) StartEngine();
         UpdateStatus();
+        if (_startEngine) StartEngine();
+        if (Startup.Enabled) _gameWatch.Start();   // after the tray and hotkey exist: it may start the script at once
     }
 
     IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -65,10 +72,31 @@ public partial class MainWindow : Window
 
     // ---- engine ----
 
-    void OnEngineButton(object sender, RoutedEventArgs e)
+    async void OnEngineButton(object sender, RoutedEventArgs e)
     {
-        if (_engine.Running) StopEngine();
-        else StartEngine();
+        if (_settingUp) return;
+        if (_engine.Running)
+        {
+            StopEngine();
+            _userStopped = _gameWatch.IsOpen;
+            return;
+        }
+        if (VJoySetup.Needed)
+        {
+            _settingUp = true;
+            EngineButton.IsEnabled = false;
+            UpdateStatus();
+            string? error = await VJoySetup.InstallAsync();
+            _settingUp = false;
+            if (_closing) return;
+            EngineButton.IsEnabled = true;
+            if (error != null)
+            {
+                UpdateStatus(error);
+                return;
+            }
+        }
+        StartEngine();
     }
 
     void StartEngine()
@@ -99,7 +127,7 @@ public partial class MainWindow : Window
         EngineButtonText.Text = Loc.T(on ? "Stop" : "Start");
         EngineButton.Background = on ? new SolidColorBrush(Color.FromRgb(0x2A, 0x2A, 0x31)) : (Brush)FindResource("AccentGradient");
         EngineCard.BorderBrush = (Brush)FindResource(on ? "ActiveLine" : "CardLine");
-        StatusDetail.Text = error ?? (on ? Loc.T("Sending") : "");
+        StatusDetail.Text = error ?? (_settingUp ? Loc.T("SettingUp") : on ? Loc.T("Sending") : "");
         StatusDetail.Visibility = StatusDetail.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         StatusDetail.Foreground = error != null ? (Brush)FindResource("Brake") : (Brush)FindResource("Sub");
         if (_miEngine != null) _miEngine.Text = Loc.T(on ? "TrayStop" : "TrayStart");
@@ -165,6 +193,22 @@ public partial class MainWindow : Window
     {
         Startup.Enabled = StartupSwitch.IsChecked == true;
         StartupSwitch.IsChecked = Startup.Enabled;
+        if (Startup.Enabled && !_gameWatch.Running) _gameWatch.Start();
+        else if (!Startup.Enabled && _gameWatch.Running) _gameWatch.Stop();
+    }
+
+    void OnGameChanged(bool open)
+    {
+        if (open)
+        {
+            if (_engine.Running || _userStopped || _autoFailed || _settingUp) return;
+            StartEngine();
+            if (_engine.Running) _autoStarted = true;
+            else _autoFailed = true;
+            return;
+        }
+        if (_autoStarted && _engine.Running) StopEngine();
+        _autoStarted = _userStopped = _autoFailed = false;
     }
 
     // ---- sensitivity ----
@@ -271,6 +315,7 @@ public partial class MainWindow : Window
     protected override void OnClosing(CancelEventArgs e)
     {
         _closing = true;
+        _gameWatch.Stop();
         SetLive(false);
         _engine.Stop();
         CursorLock.Release();
@@ -280,7 +325,7 @@ public partial class MainWindow : Window
         Application.Current.Shutdown();
     }
 
-    void ShowFromTray()
+    public void ShowFromTray()
     {
         if (_closing) return;
         Show();

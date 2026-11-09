@@ -31,8 +31,8 @@ sealed class Engine
     double _sensitivity = 20;
     public double Sensitivity { get => Volatile.Read(ref _sensitivity); set => Volatile.Write(ref _sensitivity, value); }
 
-    // last values sent, -1..1 for steering and 0..1 for pedals, read by the UI
-    public double Steering, Throttle, Brake, Clutch;
+    // last steering sent, -1..1, read by the UI
+    public double Steering;
     public bool Running => _running;
 
     // Returns null when started, else a message for the user.
@@ -47,6 +47,7 @@ sealed class Engine
         }
         if (!VJoy.AcquireVJD(Device)) return Loc.T("ErrAcquire");
 
+        Interlocked.Exchange(ref _mouseDx, 0);
         _running = true;
         var ready = new ManualResetEventSlim();
         bool mouseOk = false;
@@ -71,7 +72,7 @@ sealed class Engine
         SendAll(0, Min, Min, Min);
         for (byte b = 1; b <= ButtonScans.Length; b++) VJoy.SetBtn(false, Device, b);
         VJoy.RelinquishVJD(Device);
-        Steering = Throttle = Brake = Clutch = 0;
+        Steering = 0;
     }
 
     void Loop(ManualResetEventSlim ready, Action<bool> reportMouse)
@@ -130,9 +131,6 @@ sealed class Engine
 
                 SendAll(Math.Round(steering), throttle, brake, clutch);
                 Steering = steering / Max;
-                Throttle = (throttle - Min) / (Max - Min);
-                Brake = (brake - Min) / (Max - Min);
-                Clutch = (clutch - Min) / (Max - Min);
             }
         }
         finally

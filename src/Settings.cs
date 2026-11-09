@@ -25,7 +25,8 @@ sealed class Settings
         var s = new Settings();
         try
         {
-            if (!File.Exists(Path) && File.Exists(OldPath))
+            // only our own file: another program's settings.ini can sit next to the exe
+            if (!File.Exists(Path) && File.Exists(OldPath) && File.ReadLines(OldPath).Any(l => l.StartsWith("hotkey_key=")))
             {
                 Directory.CreateDirectory(Dir);
                 File.Move(OldPath, Path);

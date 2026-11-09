@@ -49,6 +49,8 @@ static class Native
     [DllImport("user32.dll")] public static extern bool RegisterHotKey(IntPtr hwnd, int id, uint mods, uint vk);
     [DllImport("user32.dll")] public static extern bool UnregisterHotKey(IntPtr hwnd, int id);
     [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+    [DllImport("user32.dll")] public static extern bool AllowSetForegroundWindow(int processId);
+    public const int ASFW_ANY = -1;
     [DllImport("user32.dll")] public static extern bool ClipCursor(ref RECT r);
     [DllImport("user32.dll")] public static extern bool ClipCursor(IntPtr none);
     [DllImport("user32.dll")] public static extern IntPtr CreateCursor(IntPtr inst, int x, int y, int w, int h, byte[] and, byte[] xor);
